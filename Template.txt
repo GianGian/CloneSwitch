@@ -5,7 +5,7 @@ service password-encryption
 !
 banner exec ^CC
  ****************************************************************************
- *       YOU ARE CONNECTED TO:     - DMO Dettaglio Moderno Organizzato -    *
+ *       YOU ARE CONNECTED TO:              - VEM -                         *
  *                                                                          *
  * WARNING: THIS IS A PRIVATE NETWORK, UNAUTHORIZED ACCESS IS PROHIBITED    *
  * Use of this system constitutes your consent to interception, monitoring, *
@@ -20,3 +20,13 @@ banner exec ^CC
  ****************************************************************************
 ^C
 !
+
+call-home
+ ! If contact email address in call-home is configured as sch-smart-licensing@cisco.com
+ ! the email address configured in Cisco Smart License Portal will be used as contact email address to send SCH notifications.
+ contact-email-addr sch-smart-licensing@cisco.com
+ source-interface Vlan2001
+ profile "CiscoTAC-1"
+  active
+  destination transport-method http
+  no destination transport-method email

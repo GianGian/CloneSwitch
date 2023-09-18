@@ -5,30 +5,70 @@ parse = CiscoConfParse("C:\\Users\\gianlorenzo.moser\\Documents\\Scripts\\python
 
 stringa = ""
 ask = True
-# Importa interfacce
-interface = parse.find_blocks('^interface',False,False)
-print("Importo interface ", end='')
-try: 
-    stringa += "! INTERFACCE \n"
-    for obj in interface:
-        stringa += obj + "\n"
 
-    print(" \t[OK]")
-except:
-    print(" \t[ERROR]: " + TypeError)
+#Hostname
+while ask:
+    answ = input("Vuoi modificare l'hostname? [y\\n]: ")
+    if answ == "y" or answ =="Y":
+        host =  input("Inserisci hostname: ")
+        stringa += "hostname " + host + "\n"
+        print("Importo interfacce " , end='')
+        ask = False
+    elif answ == "n" or answ == "N":
+        try:
+            host = parse.find_blocks('^hostname',False,False)
+            for obj in host:
+                stringa += obj + "\n"
+            ask = False
+            print(" \t\t[OK]")
+            
+        except:
+            print(" \t\t[ERROR]: " + TypeError)
+    else:
+        print("Comando non valido, prego riprovare. \n")
+ask=True  
+
+# Importa interfacce
+while ask:
+    answ = input("Vuoi importare le interfacce? [y\\n]: ")
+    if answ == "y" or answ =="Y":
+        print("Importo interfacce " , end='')
+        try:
+            interfacce = parse.find_blocks('^vlan',False,False)
+            stringa += "! INTERFACCE \n"
+            for obj in interfacce:
+                stringa += obj + "\n"
+            ask = False
+            print(" \t\t[OK]")
+            
+        except:
+            print(" \t\t[ERROR]: " + TypeError)
+    elif answ == "n" or answ == "N":
+        ask = False
+    else:
+        print("Comando non valido, prego riprovare. \n")
+ask=True  
 
 # Importa Vlan
-print("Importo vlan " , end='')
-
-try:
-    vlan = parse.find_blocks('^vlan',False,False)
-    stringa += "! VLAN \n"
-    for obj in vlan:
-        stringa += obj + "\n"
-
-    print(" \t\t[OK]")
-except:
-    print(" \t\t[ERROR]: " + TypeError)
+while ask:
+    answ = input("Vuoi importare la configurazione delle VLAN? [y\\n]: ")
+    if answ == "y" or answ =="Y":
+        print("Importo vlan " , end='')
+        try:
+            vlan = parse.find_blocks('^vlan',False,False)
+            stringa += "! VLAN \n"
+            for obj in vlan:
+                stringa += obj + "\n"
+            ask = False
+            print(" \t\t[OK]")
+            
+        except:
+            print(" \t\t[ERROR]: " + TypeError)
+    elif answ == "n" or answ == "N":
+        ask = False
+    else:
+        print("Comando non valido, prego riprovare. \n")
+ask=True  
 
 #spanningtree
 while ask:
@@ -50,7 +90,8 @@ while ask:
         ask = False
     else:
         print("Comando non valido, prego riprovare. \n")
-ask=True           
+ask=True  
+
 #vtp
 #print("Importo vtp config" , end='')
 #try:
@@ -66,105 +107,189 @@ ask=True
 #    print(" [ERROR]: " + TypeError)
 
 #NTP
-print("Importo NTP " , end='')
+while ask:
+    answ = input("Vuoi importare l' NTP? [y\\n]: ")
+    if answ == "y" or answ =="Y":
+        print("Importo NTP " , end='')
 
-try:
-    ntp = parse.find_blocks('^ntp',False,False)
-    stringa += "! NTP \n"
-    for obj in ntp:
-        stringa += obj + "\n"
-
-    print(" \t\t[OK]")
-except:
-    print(" \t\t[ERROR]: " + TypeError)
+        try:
+            ntp = parse.find_blocks('^ntp',False,False)
+            stringa += "! NTP \n"
+            for obj in ntp:
+                stringa += obj + "\n"
+            ask = False
+            print(" \t[OK]")
+            
+        except:
+            print(" \t[ERROR]: " + TypeError)
+    elif answ == "n" or answ == "N":
+        ask = False
+    else:
+        print("Comando non valido, prego riprovare. \n")
+ask=True 
 
 #credenziali
+
 #AAA
-print("Importo AAA " , end='')
+while ask:
+    answ = input("Vuoi importare l' AAA? [y\\n]: ")
+    if answ == "y" or answ =="Y":
+        print("Importo AAA " , end='')
 
-try:
-    aaa = parse.find_blocks('^aaa',False,False)
-    stringa += "! AAA \n"
-    for obj in aaa:
-        stringa += obj + "\n"
-
-    aaa = parse.find_blocks('^radius server',False,False)
-    for obj in aaa:
-        stringa += obj + "\n"
-
-    print(" \t\t[OK]")
-except:
-    print(" \t\t[ERROR]: " + TypeError)
+        try:
+            aaa = parse.find_blocks('^aaa',False,False)
+            stringa += "! AAA \n"
+            for obj in aaa:
+                stringa += obj + "\n"
+            aaa = parse.find_blocks('^radius server',False,False)
+            for obj in aaa:
+                stringa += obj + "\n"
+            ask = False
+            print(" \t[OK]")
+            
+        except:
+            print(" \t[ERROR]: " + TypeError)
+    elif answ == "n" or answ == "N":
+        ask = False
+    else:
+        print("Comando non valido, prego riprovare. \n")
+ask=True 
     
-#console
+#line vty
+while ask:
+    answ = input("Vuoi importare la line? [y\\n]: ")
+    if answ == "y" or answ =="Y":
+        print("Importo line " , end='')
+
+        try:
+            line = parse.find_blocks('^line',False,False)
+            stringa += "! LINE \n"
+            for obj in line:
+                stringa += obj + "\n"
+            ask = False
+            print(" \t[OK]")
+            
+        except:
+            print(" \t[ERROR]: " + TypeError)
+    elif answ == "n" or answ == "N":
+        ask = False
+    else:
+        print("Comando non valido, prego riprovare. \n")
+ask=True 
+
 #acl
-print("Importo ACL " , end='')
+while ask:
+    answ = input("Vuoi importare le ACL? [y\\n]: ")
+    if answ == "y" or answ =="Y":
+        print("Importo ACL " , end='')
 
-try:
-    acl = parse.find_blocks('^access-list',False,False)
-    stringa += "! ACL \n"
-    for obj in acl:
-        stringa += obj + "\n"
-    
-    print(" \t\t[OK]")
-except:
-    print(" \t\t[ERROR]: " + TypeError)
+        try:
+            acl = parse.find_blocks('^access-list',False,False)
+            stringa += "! ACL \n"
+            for obj in acl:
+                stringa += obj + "\n"
+            ask = False
+            print(" \t[OK]")
+            
+        except:
+            print(" \t[ERROR]: " + TypeError)
+    elif answ == "n" or answ == "N":
+        ask = False
+    else:
+        print("Comando non valido, prego riprovare. \n")
+ask=True 
 
 #static
 #routing
 
 #SNMP
-print("Importo SNMP " , end='')
+while ask:
+    answ = input("Vuoi importare l' SNMP? [y\\n]: ")
+    if answ == "y" or answ =="Y":
+        print("Importo SNMP " , end='')
 
-try:
-    snmp = parse.find_blocks('^snmp-server',False,False)
-    stringa += "! SNMP \n"
-    for obj in snmp:
-        stringa += obj + "\n"
+        try:
+            snmp = parse.find_blocks('^snmp-server',False,False)
+            stringa += "! SNMP \n"
+            for obj in snmp:
+                stringa += obj + "\n"
+            ask = False
+            print(" \t[OK]")
+            
+        except:
+            print(" \t[ERROR]: " + TypeError)
+    elif answ == "n" or answ == "N":
+        ask = False
+    else:
+        print("Comando non valido, prego riprovare. \n")
+ask=True 
 
-    print(" \t\t[OK]")
-except:
-    print(" \t\t[ERROR]: " + TypeError)
+
 #route map
-print("Importo Route MAP " , end='')
+while ask:
+    answ = input("Vuoi importare le Route MAP? [y\\n]: ")
+    if answ == "y" or answ =="Y":
+        print("Importo Route MAP " , end='')
 
-try:
-    rmap = parse.find_blocks('^route-map',False,False)
-    stringa += "! ROUTE MAP \n"
-    for obj in rmap:
-        stringa += obj + "\n"
-
-    print(" \t[OK]")
-except:
-    print(" \t[ERROR]: " + TypeError)
+        try:
+            rmap = parse.find_blocks('^route-map',False,False)
+            stringa += "! SNMP \n"
+            for obj in rmap:
+                stringa += obj + "\n"
+            ask = False
+            print(" \t[OK]")
+            
+        except:
+            print(" \t[ERROR]: " + TypeError)
+    elif answ == "n" or answ == "N":
+        ask = False
+    else:
+        print("Comando non valido, prego riprovare. \n")
+ask=True 
 
 #error disable
-print("Importo ErrDisable " , end='')
+while ask:
+    answ = input("Vuoi importare le Error Disable? [y\\n]: ")
+    if answ == "y" or answ =="Y":
+        print("Importo ErrDisable" , end='')
 
-try:
-    err = parse.find_blocks('^errdisable',False,False)
-    stringa += "! ERRDISABLE \n"
-    for obj in err:
-        stringa += obj + "\n"
-
-    print(" \t[OK]")
-except:
-    print(" \t[ERROR]: " + TypeError)
-
+        try:
+            err = parse.find_blocks('^errdisable',False,False)
+            stringa += "! ERRDISABLE \n"
+            for obj in err:
+                stringa += obj + "\n"
+            ask = False
+            print(" \t[OK]")
+            
+        except:
+            print(" \t[ERROR]: " + TypeError)
+    elif answ == "n" or answ == "N":
+        ask = False
+    else:
+        print("Comando non valido, prego riprovare. \n")
+ask=True 
 
 #dhcp
-print("Importo DHCP POOL " , end='')
+while ask:
+    answ = input("Vuoi importare il DHCP? [y\\n]: ")
+    if answ == "y" or answ =="Y":
+        print("Importo DHCP POOL" , end='')
 
-try:
-    dhcp = parse.find_blocks('^ip dhcp',False,False)
-    stringa += "! DHCP POOL \n"
-    for obj in dhcp:
-        stringa += obj + "\n"
-
-    print(" \t[OK]")
-except:
-    print(" \t[ERROR]: " + TypeError)
-
+        try:
+            dhcp = parse.find_blocks('^ip dhcp',False,False)
+            stringa += "! DHCP POOL \n"
+            for obj in dhcp:
+                stringa += obj + "\n"
+            ask = False
+            print(" \t[OK]")
+            
+        except:
+            print(" \t[ERROR]: " + TypeError)
+    elif answ == "n" or answ == "N":
+        ask = False
+    else:
+        print("Comando non valido, prego riprovare. \n")
+ask=True 
 
 #dns
 while ask:
@@ -209,20 +334,13 @@ while ask:
         ask = False
     else:
         print("Comando non valido, prego riprovare. \n")
-ask=True 
-
-#Hostname
-temp =  input("Inserisci hostname: ")
-stringa += "hostname " + temp + "\n"
+ask=True
 
 #Rimuovere sporcherie
 frase_da_rimuovere = "--More-- "
 stringa = stringa.replace(frase_da_rimuovere, "")
 
 #cambiare interfacce
-old = ""
-new = ""
-
 while ask:
     answ = input("Vuoi cambiare il nome delle interfacce ? [y\\n]: ")
     lista = [] 
@@ -230,14 +348,14 @@ while ask:
 
     if answ == "y" or answ =="Y":
         print("--- Valori inseribili --------\n")
-        print("[0] erthernet\n")
-        print("[1] fastethernet\n")
+        print("[0] Ethernet\n")
+        print("[1] Fastethernet\n")
         print("[2] Gigabitethernet\n")
         print("[3] Tengigabitethernet\n\n")
 
+        old = ""
+        new = ""
         old = lista[int(input("Inserisci il nome da da sostiture: "))]
-
-
         new = lista[int(input("Inserisci il nuovo nome: "))]
 
         stringa = stringa.replace(old, new)
