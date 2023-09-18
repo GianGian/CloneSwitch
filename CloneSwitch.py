@@ -34,17 +34,19 @@ while ask:
     if answ == "y" or answ =="Y":
         print("Importo interfacce " , end='')
         try:
-            interfacce = parse.find_blocks('^vlan',False,False)
+            interfacce = parse.find_blocks('^interface',False,False)
             stringa += "! INTERFACCE \n"
             for obj in interfacce:
                 stringa += obj + "\n"
             ask = False
+            interface = True
             print(" \t\t[OK]")
             
         except:
             print(" \t\t[ERROR]: " + TypeError)
     elif answ == "n" or answ == "N":
         ask = False
+        interface = False
     else:
         print("Comando non valido, prego riprovare. \n")
 ask=True  
@@ -224,7 +226,6 @@ while ask:
         print("Comando non valido, prego riprovare. \n")
 ask=True 
 
-
 #route map
 while ask:
     answ = input("Vuoi importare le Route MAP? [y\\n]: ")
@@ -340,47 +341,93 @@ ask=True
 frase_da_rimuovere = "--More-- "
 stringa = stringa.replace(frase_da_rimuovere, "")
 
-#cambiare interfacce
-while ask:
-    answ = input("Vuoi cambiare il nome delle interfacce ? [y\\n]: ")
-    lista = [] 
-    lista = ["Ethernet" , "FastEthernet" , "GigabitEthernet" , "TenGigabitEthernet"]
+#cambiare interfacce e chassis
+if interface:
+    #cambiare interfacce
+    while ask:
+        answ = input("Vuoi cambiare il nome delle interfacce ? [y\\n]: ")
+        lista = [] 
+        lista = ["Ethernet" , "FastEthernet" , "GigabitEthernet" , "TenGigabitEthernet"]
 
-    if answ == "y" or answ =="Y":
-        print("--- Valori inseribili --------\n")
-        print("[0] Ethernet\n")
-        print("[1] Fastethernet\n")
-        print("[2] Gigabitethernet\n")
-        print("[3] Tengigabitethernet\n\n")
+        if answ == "y" or answ =="Y":
+            print("--- Valori inseribili --------\n")
+            print("[0] Ethernet\n")
+            print("[1] Fastethernet\n")
+            print("[2] Gigabitethernet\n")
+            print("[3] Tengigabitethernet\n\n")
+            print("Ricorda di non fare overlap di interfacce!!!")
 
-        old = ""
-        new = ""
-        old = lista[int(input("Inserisci il nome da da sostiture: "))]
-        new = lista[int(input("Inserisci il nuovo nome: "))]
+            old = ""
+            new = ""
+            old = lista[int(input("Inserisci il nome da sostiture: "))]
+            new = lista[int(input("Inserisci il nuovo nome: "))]
 
-        stringa = stringa.replace(old, new)
-        print("\nFATTO :)\n")
-        
-    elif answ == "n" or answ == "N":
-        ask = False
-    else:
-        print("Comando non valido, prego riprovare. \n")
-    
-    if ask:
-        answ = input("Vuoi cambiare il nome ad altre interfacce [y\\n]: ")
-
-        if answ == "n" or answ == "N":
+            stringa = stringa.replace(old, new)
+            print("\n[OK]\n")
+            
+        elif answ == "n" or answ == "N":
             ask = False
         else:
             print("Comando non valido, prego riprovare. \n")
         
-#aggiungere default config
-lines=""
-with open("C:\\Users\\gianlorenzo.moser\\Documents\\Scripts\\python\\Template.txt", "r") as f:
-    lines=f.readlines()
+        if ask:
+            answ = input("Vuoi cambiare il nome ad altre interfacce [y\\n]: ")
 
-for line in lines:
-    stringa += line
+            if answ == "n" or answ == "N":
+                ask = False
+            else:
+                print("Comando non valido, prego riprovare. \n")
+    ask=True     
+
+    #Cambiare chassis
+    while ask:
+        answ = input("Vuoi cambiare chassis ID? [y\\n]: ")
+        if answ == "y" or answ =="Y":
+            old = ""
+            new = ""
+            old = str(input("Inserisci ID da sostiture: "))
+            new = str(input("Inserisci il nuovo ID: "))
+            stringa = stringa.replace("tEthernet" + old,"tEthernet" + new)
+            print("\n[OK]\n")
+            
+        elif answ == "n" or answ == "N":
+            ask = False
+        else:
+            print("Comando non valido, prego riprovare. \n")
+        
+        if ask:
+            answ = input("Vuoi cambiare un altro chassis ID [y\\n]: ")
+
+            if answ == "n" or answ == "N":
+                ask = False
+            else:
+                print("Comando non valido, prego riprovare. \n")
+    ask=True   
+
+#aggiungere default config
+while ask:
+    answ = input("Vuoi aggiungere il default template? [y\\n]: ")
+    if answ == "y" or answ =="Y":
+        print("Applicazione template " , end='')
+
+        try:
+            lines=""
+            with open("C:\\Users\\gianlorenzo.moser\\Documents\\Scripts\\python\\Template.txt", "r") as f:
+                lines=f.readlines()
+            
+            for line in lines:
+                stringa += line
+  
+            ask = False
+            print(" \t[OK]")
+            
+        except:
+            print(" \t[ERROR]: " + TypeError)
+    elif answ == "n" or answ == "N":
+        ask = False
+    else:
+        print("Comando non valido, prego riprovare. \n")
+ask=True
 
 #stringa2 = stringa2.lstrip("\t")
 with open("C:\\Users\\gianlorenzo.moser\\Documents\\Scripts\\python\\New_Conf.txt", "w") as f:
