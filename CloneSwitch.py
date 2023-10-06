@@ -1,10 +1,98 @@
 from ciscoconfparse import CiscoConfParse
+import netmiko
+import os
+from tkinter import N, Tk
+from tkinter.filedialog import askopenfilename
+from tkinter.filedialog import asksaveasfile
+
+
+def AskPath():
+    root = Tk()
+    root.withdraw() 
+    ask = True
+    f = ""
+    while ask:
+        f = askopenfilename()
+        if(os.path.exists(f)):
+            ask = False
+        else:
+            print("Il file selezionato non esise.\n")
+    return f
+def AskYoN (value):
+    run = True
+    while run:
+        answ = input(value + "[y\\n]: ")
+        if (answ == "y" or answ == "Y" or answ == "n" or answ == "N"):
+            run = False 
+        else: 
+            print("Valore inserito non valido. Prego riprovare")
+    if (answ == "y" or answ == "Y"):
+        answ = "y"
+    else:
+        answ = "n"
+    return answ
+def T_ask(value):
+    asnw = AskYoN(value)
+    if asnw == "y": 
+        return True
+    else:
+        return False   
+def ConfLine (val, name):
+    p = "[ " 
+    if val:
+        p += "x ]\t"
+    else:
+       p += "]\t" 
+    p += name 
+    print (p)
+
+#definizioni
+def ping(ip_address):
+    response = os.system(f"ping {ip_address}")
+    if response == 0:
+        print( "IP up!")
+        try:
+            with netmiko.ConnectHandler(**device) as ssh:
+                ssh.enable()
+                output = ssh.send_command("show running-config")
+                parse = CiscoConfParse (output, syntax='ios')
+        except:
+            print(" \t\t[ERROR]") 
+            exit()
+    else:
+        print( "IP unreachable!")
+        exit()
 
 # Carica la configurazione dello switch
-parse = CiscoConfParse("C:\\Users\\gianlorenzo.moser\\Documents\\Scripts\\python\\3850dmo.txt", syntax='ios')
+ask = True
+while ask:
+    answ = input("Vuoi importare conf localmente? [y\\n]: ")
+    if answ == "y" or answ =="Y":
+        confFile = AskPath()
+        conf = ""
+        print("File: " + confFile + "\n")
+        print("File selezionato\t\t[OK]")
+        with open(confFile, "r") as file: 
+            conf = file.read()
+            print("File aperto\t\t\t[OK]")
+        #parse = CiscoConfParse("C:\\Users\\gianlorenzo.moser\\Documents\\Scripts\\python\\3850dmo.txt", syntax='ios')
+        ask = False
+        print(" \t\t[OK]")
+    elif answ == "n" or answ == "N":
+        device = {
+            "device_type": "cisco_ios",
+            "ip": input("inserisci ip "),
+            "username": input("inserisci username "),
+            "password": input("inserisci password "),
+            }
+        ping (device["ip"])
+        ask = False
+        print(" \t\t[OK]")
+    else:
+        print("Comando non valido, prego riprovare. \n")
+ask=True  
 
 stringa = ""
-ask = True
 
 #Hostname
 while ask:
@@ -65,7 +153,7 @@ while ask:
             print(" \t\t[OK]")
             
         except:
-            print(" \t\t[ERROR]: " + TypeError)
+            print(" \t\t[ERROR] ")
     elif answ == "n" or answ == "N":
         ask = False
     else:
@@ -430,5 +518,14 @@ while ask:
 ask=True
 
 #stringa2 = stringa2.lstrip("\t")
-with open("C:\\Users\\gianlorenzo.moser\\Documents\\Scripts\\python\\New_Conf.txt", "w") as f:
-    f.write(stringa)
+#with open("C:\\Users\\gianlorenzo.moser\\Documents\\Scripts\\python\\New_Conf.txt", "w") as f:
+#    f.write(stringa)
+
+print("Dove vuoi salvare il file? : ")
+root = Tk()
+root.withdraw() 
+f = ""
+f = asksaveasfile()
+f.write(stringa)
+f.close()
+print("File salvato con successo.")
